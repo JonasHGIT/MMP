@@ -2,6 +2,17 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
+# Unity-specific files/folders to ignore
+Library/
+Logs/
+UserSettings/
+
+# Ignore the plastic SCM folder (if you use it)
+.plastic/
+
+# Optional: Ignore any configuration file that is not necessary for versioning
+ignore.conf
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
