@@ -6,6 +6,7 @@
 Library/
 Logs/
 UserSettings/
+Temp/
 
 # Ignore the plastic SCM folder (if you use it)
 .plastic/
