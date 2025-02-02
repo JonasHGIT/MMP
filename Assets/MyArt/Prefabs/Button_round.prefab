@@ -13,10 +13,9 @@ GameObject:
   - component: {fileID: 5931473070447971842}
   - component: {fileID: 1587714070149850519}
   - component: {fileID: 3473753284912951535}
-  - component: {fileID: 7728813048730621222}
   m_Layer: 5
   m_Name: Button_round_container
-  m_TagString: Interactable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,20 +147,6 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
---- !u!114 &7728813048730621222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1486012718300419460}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f397439762c9739469c548314674526c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wobbleDuration: 3
-  wobbleAmount: 3
 --- !u!1 &1976825113028438794
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,9 +944,10 @@ GameObject:
   - component: {fileID: 2265031506028564449}
   - component: {fileID: 6677349139718681134}
   - component: {fileID: 9018587400136582326}
+  - component: {fileID: 6619550308677593280}
   m_Layer: 5
   m_Name: Icon_Image
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1024,3 +1010,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6619550308677593280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8018735153097953600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f397439762c9739469c548314674526c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wobbleDuration: 3
+  wobbleAmount: 3
