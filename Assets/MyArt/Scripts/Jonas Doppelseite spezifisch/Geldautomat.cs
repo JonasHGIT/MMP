@@ -1,3 +1,18 @@
+/*
+ * Autor: Jonas Hammer
+ * Last Edited: 02.02.2025
+ * 
+ * Beschreibung:
+ * Dieses Script steuert einen Geldautomaten (ATM) in einem UI, das Interaktionen wie das Einführen einer Karte, das Eingeben eines PIN-Codes und das Abheben sowie Einzahlen von Geld ermöglicht.
+ * Es enthält Animationen für das Einführen der Karte und das Erscheinen von Bargeld sowie Interaktionen, bei denen der Benutzer Bargeld sammeln kann.
+ * 
+ * Features:
+ * - Karte einführen und PIN eingeben
+ * - Kontostand anzeigen und aktualisieren
+ * - Geld abheben und einzahlen
+ * - Möglichkeit, Bargeld zu sammeln
+ */
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -6,109 +21,89 @@ using System.Collections;
 public class Geldautomat : MonoBehaviour
 {
     // Referenzen für Karteninteraktionen
-    public GameObject bankCard;
-    public Transform cardSlot;
-    public TMP_InputField pinInputField;
-    public TextMeshProUGUI screenText; // Wird für alle dynamischen Texte verwendet
-    public TextMeshProUGUI uiBalanceDisplay; // Kontostand-Anzeige
-    public TextMeshProUGUI collectedCashDisplay; // Anzeige für gesammeltes Bargeld
+    public GameObject bankCard;  // Referenz auf die Bankkarte
+    public Transform cardSlot;  // Der Slot, in den die Karte eingelegt wird
+    public TMP_InputField pinInputField;  // Eingabefeld für den PIN
+    public TextMeshProUGUI screenText;  // Wird für alle dynamischen Texte verwendet
+    public TextMeshProUGUI uiBalanceDisplay;  // Kontostand-Anzeige
+    public TextMeshProUGUI collectedCashDisplay;  // Anzeige für gesammeltes Bargeld
 
-    public GameObject flaeche1;
-    public GameObject flaeche2a;
-    public GameObject flaeche2b;
-    public GameObject flaeche2c;
-    public GameObject flaeche3; // Neue Fläche für die Animation und Info nach Transaktion
+    public GameObject flaeche1;  // Bereich für die Funktionserwahl
+    public GameObject flaeche2a;  // Bereich für die Kontostand-Anzeige
+    public GameObject flaeche2b;  // Bereich für Abhebungsoptionen
+    public GameObject flaeche2c;  // Bereich für Einzahlungsmöglichkeiten
+    public GameObject flaeche3;  // Neue Fläche für Animation und Info nach Transaktion
 
-    public Transform cashSpawnPoint; // Punkt, an dem Bargeld erscheinen soll
-    public GameObject cashPrefab; // Prefab für Bargeld
+    public Transform cashSpawnPoint;  // Punkt, an dem Bargeld erscheinen soll
+    public GameObject cashPrefab;  // Prefab für Bargeld
 
-    private bool isCardInserted = false;
-    private bool isPinEntered = false;
-    private int accountBalance = 1000; // Startbetrag
-    private int focus = 0;
-    private int collectedCash = 100; // Startwert für gesammeltes Bargeld
+    private bool isCardInserted = false;  // Status, ob die Karte eingeführt wurde
+    private bool isPinEntered = false;  // Status, ob der PIN korrekt eingegeben wurde
+    private int accountBalance = 1000;  // Startbetrag des Kontos
+    private int focus = 0;  // Fokus-Status für die PIN-Eingabe
+    private int collectedCash = 100;  // Startwert für gesammeltes Bargeld
 
-    private Vector3 cardStartPosition;
+    private Vector3 cardStartPosition;  // Die Ausgangsposition der Bankkarte
 
     void Start()
     {
-        cardStartPosition = bankCard.transform.position;
-        UpdateBalanceDisplay();
-        UpdateCollectedCashDisplay();
+        cardStartPosition = bankCard.transform.position;  // Speichert die Startposition der Bankkarte
+        UpdateBalanceDisplay();  // Aktualisiert die Anzeige des Kontostands
+        UpdateCollectedCashDisplay();  // Aktualisiert die Anzeige des gesammelten Bargelds
     }
 
     void Update()
     {
-        if (pinInputField.isFocused)
+        if (pinInputField.isFocused)  // Überprüft, ob das PIN-Eingabefeld fokussiert ist
         {
             focus = 1;
         }
 
-        if (focus == 1 && Input.GetKeyDown(KeyCode.Return))
+        if (focus == 1 && Input.GetKeyDown(KeyCode.Return))  // Wenn die Eingabetaste gedrückt wird, PIN eingeben
         {
             OnPinEntered();
         }
 
-        if (!isCardInserted)
+        if (!isCardInserted)  // Wenn die Karte noch nicht eingeführt wurde
         {
             CheckCardInsertion();
         }
     }
 
+    // Überprüft, ob die Karte richtig im Kartenschlitz platziert wurde
     private void CheckCardInsertion()
     {
         if (Vector3.Distance(bankCard.transform.position, cardSlot.position) < 0.1f)
         {
-            // Wenn Karte im Slot ist, starten wir die Animation
-            StartCoroutine(AnimateCardInsertion());
+            // Karte ist im Slot, wir machen die Karte unsichtbar und setzen sie als eingeführt
+            bankCard.SetActive(false);
+            screenText.text = "Bitte PIN eingeben.";  // Text ändern
+            isCardInserted = true;
         }
     }
 
+    // Wird aufgerufen, wenn die Karte zu ziehen beginnt
     public void OnCardDragStart()
     {
         // Karte wird gezogen
     }
 
+    // Wird aufgerufen, wenn das Ziehen der Karte endet
     public void OnCardDragEnd()
     {
         if (Vector3.Distance(bankCard.transform.position, cardSlot.position) < 0.1f)
         {
             isCardInserted = true;
-            bankCard.SetActive(false);
-            screenText.text = "Bitte PIN eingeben.";
+            bankCard.SetActive(false);  // Karte wird ausgeblendet
+            screenText.text = "Bitte PIN eingeben.";  // Text ändern
         }
         else
         {
-            bankCard.transform.position = cardStartPosition;
+            bankCard.transform.position = cardStartPosition;  // Karte zurücksetzen, wenn sie nicht richtig platziert wurde
         }
     }
 
-    // Coroutine für die Animation, dass die Karte eingezogen wird
-    private IEnumerator AnimateCardInsertion()
-    {
-        Vector3 startPosition = bankCard.transform.position;
-        Vector3 endPosition = cardSlot.position;
-        float duration = 1.5f; // Dauer der Animation
-        float elapsedTime = 0f;
-
-        // Solange wir noch nicht das Ende der Animation erreicht haben
-        while (elapsedTime < duration)
-        {
-            // Lerp für sanfte Bewegung von Startposition zu Zielposition
-            bankCard.transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null; // Warten bis zum nächsten Frame
-        }
-
-        // Sicherstellen, dass die Karte exakt an der Zielposition landet
-        bankCard.transform.position = endPosition;
-
-        // Karte ausblenden und Text aktualisieren
-        bankCard.SetActive(false);
-        screenText.text = "Bitte PIN eingeben.";
-        isCardInserted = true;
-    }
-
+    // Wird aufgerufen, wenn der PIN eingegeben wurde
     public void OnPinEntered()
     {
         string enteredPin = pinInputField.text.Trim();
@@ -116,13 +111,13 @@ public class Geldautomat : MonoBehaviour
         {
             isPinEntered = true;
             screenText.text = "Bitte wählen Sie eine Funktion.";
-            flaeche1.SetActive(true);
+            flaeche1.SetActive(true);  // Zeige die Funktionenauswahl
         }
         else
         {
             screenText.text = "Falsche PIN. Versuchen Sie es erneut.";
         }
-        pinInputField.text = "";
+        pinInputField.text = "";  // Leere das Eingabefeld
     }
 
     // Funktion für Fläche 2a: Kontostand anzeigen
@@ -154,6 +149,7 @@ public class Geldautomat : MonoBehaviour
         screenText.text = "Bitte wählen Sie eine Funktion.";
     }
 
+    // Abhebung von Geld
     public void Withdraw(int amount)
     {
         if (accountBalance >= amount)
@@ -161,7 +157,7 @@ public class Geldautomat : MonoBehaviour
             accountBalance -= amount;
             SetActiveFlaeche(flaeche3);
             screenText.text = $"Du hast {amount}€ abgehoben.";
-            AnimateCash(amount); // Bargeldanimation starten
+            SpawnCash(amount);  // Erstelle Bargeld ohne Animation
         }
         else
         {
@@ -170,6 +166,7 @@ public class Geldautomat : MonoBehaviour
         UpdateBalanceDisplay();
     }
 
+    // Einzahlung von Geld
     public void Deposit(int amount)
     {
         if (collectedCash >= amount)
@@ -187,80 +184,25 @@ public class Geldautomat : MonoBehaviour
         UpdateCollectedCashDisplay();
     }
 
-    private void AnimateCash(int amount)
+    // Erstelle Bargeld ohne Animation
+    private void SpawnCash(int amount)
     {
-        // Instantiate Cash Prefab
-        GameObject cash = Instantiate(cashPrefab, cashSpawnPoint.position, Quaternion.identity);
-        cash.transform.SetParent(cashSpawnPoint); // Sicherstellen, dass es an cashSpawnPoint bleibt
-        cash.transform.localScale = Vector3.one; // Resetten der Skalierung, falls abweichend
-
-        // Sicherstellen, dass es sichtbar ist (Sorting Layer für UI oder Welt-Layer-Anpassungen)
-        SpriteRenderer renderer = cash.GetComponent<SpriteRenderer>();
-        if (renderer != null)
-        {
-            renderer.sortingLayerName = "UI"; // Anpassen an deinen Sorting Layer
-            renderer.sortingOrder = 10; // Sicherstellen, dass es über anderen Objekten liegt
-        }
+        GameObject cash = Instantiate(cashPrefab, cashSpawnPoint.position, Quaternion.identity);  // Erstelle Bargeld-Objekt
+        cash.transform.SetParent(cashSpawnPoint);  // Setze das Bargeld an den Spawnpunkt
+        cash.transform.localScale = Vector3.one;
 
         // Klicken für das Sammeln des Bargeldes
         cash.AddComponent<Button>().onClick.AddListener(() => CollectCash(cash, amount));
-
-        // Animation: Bargeld von oben nach unten bewegen
-        StartCoroutine(MoveCashDownwards(cash));
     }
 
+    // Methode zum Sammeln von Bargeld
     private void CollectCash(GameObject cash, int amount)
     {
-        // Wenn das Bargeld angeklickt wird, sammeln wir es
         collectedCash += amount;
-        UpdateCollectedCashDisplay();
+        UpdateCollectedCashDisplay();  // Update die gesammelte Bargeldanzeige
 
-        // Fading-Effekt
-        StartCoroutine(FadeOutAndDestroyCash(cash));
-    }
-
-    private IEnumerator MoveCashDownwards(GameObject cash)
-    {
-        float duration = 1.5f;
-        Vector3 startPosition = cash.transform.position;
-        Vector3 endPosition = startPosition + Vector3.down * 1.0f;
-
-        float elapsedTime = 0;
-        while (elapsedTime < duration)
-        {
-            cash.transform.position = Vector3.Lerp(startPosition, endPosition, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        cash.transform.position = endPosition;
-    }
-
-    private IEnumerator FadeOutAndDestroyCash(GameObject cash)
-    {
-        // Fading-Effekt über eine Dauer von 1 Sekunde
-        SpriteRenderer renderer = cash.GetComponent<SpriteRenderer>();
-        if (renderer != null)
-        {
-            Color startColor = renderer.color;
-            float fadeDuration = 0f; // Setze die Dauer für das Fading (erstmal 0 weil funktioniert nicht ganz)
-            float elapsedTime = 0;
-
-            while (elapsedTime < fadeDuration)
-            {
-                renderer.color = Color.Lerp(startColor, new Color(startColor.r, startColor.g, startColor.b, 0), elapsedTime / fadeDuration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            // Zerstören des Bargeldes nach dem Ausblenden
-            Destroy(cash);
-        }
-    }
-
-    private void UpdateScreenTextAfterAnimation()
-    {
-        screenText.text += "\nBitte entnehmen Sie das Bargeld dem Ausgabefach.";
+        // Zerstöre das Bargeldobjekt direkt
+        Destroy(cash);
     }
 
     // Kontostand-Anzeige aktualisieren
@@ -272,6 +214,7 @@ public class Geldautomat : MonoBehaviour
         }
     }
 
+    // Anzeige des gesammelten Bargelds aktualisieren
     private void UpdateCollectedCashDisplay()
     {
         if (collectedCashDisplay != null)
@@ -294,12 +237,13 @@ public class Geldautomat : MonoBehaviour
         activeFlaeche.SetActive(true);
     }
 
+    // Karte zurückgeben
     public void ReturnCard()
     {
         isCardInserted = false;
         isPinEntered = false;
-        bankCard.transform.position = cardStartPosition; // Rücksetzen der Position
-        bankCard.transform.rotation = Quaternion.identity; // Rücksetzen der Rotation
+        bankCard.transform.position = cardStartPosition;  // Rücksetzen der Position
+        bankCard.transform.rotation = Quaternion.identity;  // Rücksetzen der Rotation
 
         bankCard.SetActive(true);
         screenText.text = "Bitte Karte einführen.";

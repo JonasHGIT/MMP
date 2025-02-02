@@ -215,6 +215,7 @@ GameObject:
   - component: {fileID: 393108573988555022}
   - component: {fileID: 3722863565960337155}
   - component: {fileID: 364513060758613175}
+  - component: {fileID: 6678197387218093707}
   m_Layer: 5
   m_Name: Sound_Hitbox
   m_TagString: Untagged
@@ -348,6 +349,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2518d5cb0f92f6643aab1f37f364a33e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6678197387218093707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3509008413973353721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa4e6ddd3c4acc7418143dd2fc1bd84d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toggleButton: {fileID: 3722863565960337155}
+  buttonImage: {fileID: 3399367268589822596}
+  spriteOn: {fileID: 21300000, guid: 96fe2add006a841478e6a65d356d3463, type: 3}
+  spriteOff: {fileID: 21300000, guid: 6b2def2e199e8464eb8a7409fe59ba86, type: 3}
 --- !u!1 &4011779437081027723
 GameObject:
   m_ObjectHideFlags: 0

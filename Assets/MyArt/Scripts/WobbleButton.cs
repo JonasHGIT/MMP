@@ -1,8 +1,22 @@
+/*
+ * Autor: Jonas Hammer
+ * Last Edited: 02.02.2025
+ * 
+ * Beschreibung:
+ * Dieses Script sucht in der aktuellen Szene nach Objekten mit dem Tag "Interactable"
+ * und wendet einen "Wobble"-Effekt auf diese Objekte an, wenn sie das "WobbleEffect"-Script besitzen.
+ * 
+ * Features:
+ * - Suche nach Objekten mit dem Tag "Interactable" in der aktuellen Szene
+ * - Wendet den Wobble-Effekt auf diese Objekte an, falls vorhanden
+ * - Loggt detaillierte Informationen über die gefundenen Objekte und angewandten Effekte
+ */
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class WobbleButton : MonoBehaviour
 {
+    // Methode zum Highlighten und Wackeln der interaktiven Objekte in der aktuellen Szene
     public void HighlightInteractables()
     {
         // Aktive Szene ermitteln

@@ -455,6 +455,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &116356946 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3399367268589822596, guid: 3c11682861952b7419c51de1757aaf42, type: 3}
+  m_PrefabInstance: {fileID: 1810268941}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &132508375
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,6 +674,9 @@ MonoBehaviour:
   - {fileID: 960426400}
   normalTMPTexts:
   - {fileID: 2031485957}
+  audioButtonIcon: {fileID: 116356946}
+  audioOnSprite: {fileID: 0}
+  audioOffSprite: {fileID: 0}
 --- !u!4 &239250905
 Transform:
   m_ObjectHideFlags: 0

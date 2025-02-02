@@ -1,3 +1,18 @@
+/*
+ * Autor: Jonas Hammer
+ * Last Edited: 02.02.2025
+ * 
+ * Beschreibung:
+ * Dieses Script ermöglicht das Ziehen und Ablegen von Summen auf Slots,
+ * führt Simulationen mit Zinsberechnungen durch und zeigt die Ergebnisse an.
+ * 
+ * Features:
+ * - Drag-and-Drop der Summen
+ * - Zinsberechnung für mehrere Jahre
+ * - Anzeige der Summen und des aktuellen Jahres
+ * - Möglichkeit zur Simulation von Zinseszins
+ */
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -10,6 +25,7 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private Canvas canvas;
     private Vector3 startPosition;
 
+    [Header("Drag and Drop Konfiguration")]
     [SerializeField] private Transform[] slots; // Array von Slots
     [SerializeField] private TMP_Text[] sumTexts; // TMP-Texte für die Summen
     [SerializeField] private TMP_Text interestText; // Zinsanzeige für Slot 2 (in %)
@@ -43,17 +59,26 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
+    /// <summary>
+    /// Wird aufgerufen, wenn das Ziehen des Objekts beginnt.
+    /// </summary>
     public void OnBeginDrag(PointerEventData eventData)
     {
         rectTransform.SetParent(canvas.transform, true);
         transform.SetAsLastSibling();
     }
 
+    /// <summary>
+    /// Wird kontinuierlich aufgerufen, während das Objekt gezogen wird.
+    /// </summary>
     public void OnDrag(PointerEventData eventData)
     {
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
+    /// <summary>
+    /// Wird aufgerufen, wenn das Ziehen des Objekts endet.
+    /// </summary>
     public void OnEndDrag(PointerEventData eventData)
     {
         Transform closestSlot = null;
@@ -79,6 +104,9 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
+    /// <summary>
+    /// Positioniert das Objekt am nächsten Slot.
+    /// </summary>
     private void SnapToSlot(Transform slot)
     {
         rectTransform.SetParent(slot);
@@ -94,12 +122,18 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         UpdateSumText(slot);
     }
 
+    /// <summary>
+    /// Passt die Höhe des Summen-Elements an.
+    /// </summary>
     private void UpdateSumHeight()
     {
         float value = GetSumValue();
         rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, value);
     }
 
+    /// <summary>
+    /// Aktualisiert den Text für die Summe im Slot.
+    /// </summary>
     private void UpdateSumText(Transform slot)
     {
         if (sumTexts != null)
@@ -126,6 +160,9 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
+    /// <summary>
+    /// Setzt das Objekt zurück an die Startposition.
+    /// </summary>
     public void ResetToStartPosition()
     {
         rectTransform.position = startPosition;
@@ -138,6 +175,9 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
+    /// <summary>
+    /// Holt den Wert der Summe aus dem Namen des GameObjects.
+    /// </summary>
     private float GetSumValue()
     {
         string[] parts = gameObject.name.Split('_');
@@ -196,6 +236,9 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         return 0f; // Standardzins: 0%
     }
 
+    /// <summary>
+    /// Holt die Jahre aus dem Text im entsprechenden Slot.
+    /// </summary>
     private int GetYears()
     {
         if (currentSlot == slots[1] && yearsText != null)
@@ -218,6 +261,9 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         return 0; // Standardjahre: 0
     }
 
+    /// <summary>
+    /// Startet die Simulation basierend auf den aktuellen Eingabewerten.
+    /// </summary>
     private void StartSimulation()
     {
         if (currentSlot == null)
@@ -236,6 +282,9 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
+    /// <summary>
+    /// Simuliert den Zinseszins über die Jahre.
+    /// </summary>
     private IEnumerator SimulateYears(float initialSum, float interestRate, int years)
     {
         float currentSum = initialSum;
@@ -254,6 +303,9 @@ public class DragAndDropSum : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         }
     }
 
+    /// <summary>
+    /// Aktualisiert die Anzeige der Summe im UI.
+    /// </summary>
     private void UpdateSumDisplay(float currentSum)
     {
         if (currentSlot != null)

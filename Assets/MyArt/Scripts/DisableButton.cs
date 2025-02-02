@@ -1,3 +1,17 @@
+/*
+ * Autor: Jonas Hammer
+ * Last Edited: 02.02.2025
+ * 
+ * Beschreibung:
+ * Dieses Script deaktiviert einen Button, wenn das "verblassen"-Child-GameObject aktiv ist,
+ * und macht ihn interaktiv, wenn es nicht aktiv ist. Zudem wird geprüft, ob der Button
+ * eine verwendete Methode in der OnClick-Liste hat, um das "verblassen"-Objekt zu steuern.
+ * 
+ * Features:
+ * - Deaktivierung des Buttons basierend auf dem "verblassen"-Objekt
+ * - Überprüfung der OnClick-Liste des Buttons
+ * - Aktivierung/Deaktivierung des "verblassen"-Objekts
+ */
 using UnityEngine;
 using UnityEngine.UI;
 

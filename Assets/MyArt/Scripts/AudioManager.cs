@@ -1,24 +1,44 @@
+/*
+ * Autor: Jonas Hammer
+ * Last Edited: 02.02.2025
+ * 
+ * Beschreibung:
+ * Dieses Script verwaltet die Wiedergabe von verschiedenen Audioeffekten in einer Benutzeroberfläche. 
+ * Es ermöglicht das Abspielen von Hintergrundmusik, Button-Sounds und spezifischen Text-Lese-Sounds, 
+ * wenn der Benutzer mit Buttons oder Texten interagiert.
+ * 
+ * Features:
+ * - Hintergrundmusik und allgemeine Soundeffekte
+ * - Zuordnung von Sounds zu Buttons und Texten
+ * - Steuerung der Lautstärke (Stumm- bzw. Mute-Funktion)
+ * - Interaktive Sound-Wiedergabe für Text und Buttons
+ * - Stopp aller Sounds bei neuem Klick
+ */
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using TMPro;  // TextMeshPro Namespace hinzufügen
+using TMPro;
 
 public class AudioManager : MonoBehaviour
 {
     // Hintergrundmusik
-    public AudioSource backgroundMusic;
+    [Header("Hintergrundmusik")]
+    [SerializeField] private AudioSource backgroundMusic;
 
     // Allgemeiner Button-Sound
-    public AudioSource generalButtonSound;
-    public Button[] generalButtons;  // Buttons, die den allgemeinen Sound verwenden
+    [Header("Allgemeine Button-Sounds")]
+    [SerializeField] private AudioSource generalButtonSound;
+    [SerializeField] private Button[] generalButtons;
 
-    // Buttontext-bezogene Audioquellen
-    public AudioSource[] buttonTextReadingSounds;
-    public Button[] buttonTexts;
+    // Button-Text Sounds
+    [Header("Button-Text Sounds")]
+    [SerializeField] private AudioSource[] buttonTextReadingSounds;
+    [SerializeField] private Button[] buttonTexts;  // Zurück zu "buttonTexts"
 
-    // TMP-Text-bezogene Audioquellen
-    public AudioSource[] textReadingSounds;
-    public TMP_Text[] normalTMPTexts;  // TMP-Text-Elemente
+    // TMP-Text Sounds
+    [Header("TMP-Text Sounds")]
+    [SerializeField] private AudioSource[] textReadingSounds;
+    [SerializeField] private TMP_Text[] normalTMPTexts;
 
     private bool isMuted = false;
 
@@ -29,6 +49,9 @@ public class AudioManager : MonoBehaviour
         AssignGeneralButtonSounds();
     }
 
+    /// <summary>
+    /// Schaltet die Audio-Wiedergabe ein oder aus.
+    /// </summary>
     public void ToggleAudio()
     {
         isMuted = !isMuted;
@@ -36,38 +59,39 @@ public class AudioManager : MonoBehaviour
         Debug.Log("Audio ON/OFF gestellt.");
     }
 
+    /// <summary>
+    /// Setzt den Zustand der Audioquellen (stumm oder nicht).
+    /// </summary>
     private void SetAudioState(bool mute)
     {
         if (backgroundMusic != null)
-        {
             backgroundMusic.mute = mute;
-        }
 
-        foreach (AudioSource buttonSound in buttonTextReadingSounds)
-        {
-            buttonSound.mute = mute;
-        }
+        foreach (var sound in buttonTextReadingSounds)
+            sound.mute = mute;
 
-        foreach (AudioSource textSound in textReadingSounds)
-        {
-            textSound.mute = mute;
-        }
+        foreach (var sound in textReadingSounds)
+            sound.mute = mute;
 
         if (generalButtonSound != null)
-        {
             generalButtonSound.mute = mute;
-        }
     }
 
+    /// <summary>
+    /// Weist jedem Button eine entsprechende Sound-Funktion zu.
+    /// </summary>
     private void AssignButtonSounds()
     {
-        for (int i = 0; i < buttonTexts.Length; i++)
+        for (int i = 0; i < buttonTexts.Length; i++)  // Hier wieder auf "buttonTexts" geändert
         {
             int index = i;
             buttonTexts[i].onClick.AddListener(() => PlayButtonTextReadingSound(index));
         }
     }
 
+    /// <summary>
+    /// Weist jedem TMP-Text eine Sound-Funktion zu.
+    /// </summary>
     private void AssignTMPTextSounds()
     {
         for (int i = 0; i < normalTMPTexts.Length; i++)
@@ -77,7 +101,9 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Zuordnung der allgemeinen Buttons
+    /// <summary>
+    /// Weist allgemeinen Buttons eine Sound-Funktion zu.
+    /// </summary>
     private void AssignGeneralButtonSounds()
     {
         foreach (Button button in generalButtons)
@@ -86,65 +112,94 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Spielt den Sound für Buttons mit Neustart bei erneutem Klicken
+    /// <summary>
+    /// Stoppt alle derzeit abgespielten Sounds.
+    /// </summary>
+    private void StopAllAudio()
+    {
+        foreach (var sound in buttonTextReadingSounds)
+        {
+            if (sound.isPlaying)
+                sound.Stop();
+        }
+
+        foreach (var sound in textReadingSounds)
+        {
+            if (sound.isPlaying)
+                sound.Stop();
+        }
+
+        if (generalButtonSound.isPlaying)
+            generalButtonSound.Stop();
+    }
+
+    /// <summary>
+    /// Spielt den Sound für einen bestimmten Button-Text ab.
+    /// </summary>
+    /// <param name="index">Index des Buttons</param>
     public void PlayButtonTextReadingSound(int index)
     {
         if (index >= 0 && index < buttonTextReadingSounds.Length)
         {
-            if (buttonTextReadingSounds[index].isPlaying)
-            {
-                buttonTextReadingSounds[index].Stop();
-            }
+            StopAllAudio();
             buttonTextReadingSounds[index].Play();
-            Debug.Log("Button-Text-Sound abgespielt: " + index);
+            Debug.Log($"Button-Text-Sound abgespielt: {index}");
         }
         else
         {
-            Debug.LogWarning("Kein Sound für diesen Button-Index vorhanden.");
+            Debug.LogWarning($"Kein Sound für diesen Button-Index ({index}) vorhanden.");
         }
     }
 
-    // Spielt den allgemeinen Button-Sound
+    /// <summary>
+    /// Spielt den allgemeinen Button-Sound ab.
+    /// </summary>
     public void PlayGeneralButtonSound()
     {
-        if (generalButtonSound.isPlaying)
-        {
-            generalButtonSound.Stop();
-        }
+        StopAllAudio();
         generalButtonSound.Play();
         Debug.Log("Allgemeiner Button-Sound abgespielt.");
     }
 
-    // Spielt den Sound für normalen TMP-Text mit Neustart bei erneutem Klicken
+    /// <summary>
+    /// Spielt den Sound für einen bestimmten TMP-Text ab.
+    /// </summary>
+    /// <param name="index">Index des TMP-Textes</param>
     public void PlayTMPTextReadingSound(int index)
     {
         if (index >= 0 && index < textReadingSounds.Length)
         {
-            if (textReadingSounds[index].isPlaying)
-            {
-                textReadingSounds[index].Stop();
-            }
+            StopAllAudio();
             textReadingSounds[index].Play();
-            Debug.Log("Normaler TMP-Text-Sound abgespielt: " + index);
+            Debug.Log($"TMP-Text-Sound abgespielt: {index}");
         }
         else
         {
-            Debug.LogWarning("Kein Sound für diesen TMP-Text-Index vorhanden.");
+            Debug.LogWarning($"Kein Sound für diesen TMP-Text-Index ({index}) vorhanden.");
         }
     }
 }
 
+/// <summary>
+/// Klasse zur Verarbeitung von Klickereignissen auf TMP-Texten.
+/// </summary>
 public class TextSoundTrigger : MonoBehaviour, IPointerClickHandler
 {
     private int index;
     private System.Action<int> playSoundAction;
 
+    /// <summary>
+    /// Initialisiert den Trigger mit dem zugehörigen Sound-Index.
+    /// </summary>
     public void Initialize(int index, System.Action<int> playSoundAction)
     {
         this.index = index;
         this.playSoundAction = playSoundAction;
     }
 
+    /// <summary>
+    /// Reagiert auf Klicks und spielt den zugeordneten Sound ab.
+    /// </summary>
     public void OnPointerClick(PointerEventData eventData)
     {
         playSoundAction?.Invoke(index);
