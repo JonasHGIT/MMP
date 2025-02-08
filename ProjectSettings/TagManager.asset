@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Interactable
   - Sound_Hitbox
+  - Country_DE
+  - Country_IRL
+  - Country_FR
+  - Country_IT
   layers:
   - Default
   - TransparentFX
