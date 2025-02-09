@@ -10,6 +10,7 @@ TagManager:
   - Country_IRL
   - Country_FR
   - Country_IT
+  - DragNDrop
   layers:
   - Default
   - TransparentFX

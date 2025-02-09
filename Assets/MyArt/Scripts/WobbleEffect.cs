@@ -55,5 +55,6 @@ public class WobbleEffect : MonoBehaviour
         }
 
         isWobbling = false;  // Setze das Flag zurück, wenn der Effekt beendet ist
+    
     }
 }
