@@ -22,7 +22,7 @@ Die finale Abgabe inkludiert:
 
 ## Repository
 
-Das Projekt ist auf GitHub verfügbar: [MMP - Edutainment-App "Unser Geld und die Wirtschaft"]([https://github.com/JonasHGIT/MMP](https://github.com/HakakuruDragone/PublicMMP))
+Das Projekt ist auf GitHub verfügbar: [MMP - Edutainment-App "Unser Geld und die Wirtschaft"](https://github.com/HakakuruDragone/PublicMMP)
 
 ---
 
